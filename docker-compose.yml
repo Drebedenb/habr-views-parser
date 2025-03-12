@@ -1,18 +1,18 @@
 services:
-  app:
+  scrapy-app:
     build: .
-    container_name: app_container
+    container_name: scrapy-container
     restart: unless-stopped
     ports:
       - 80:80
     depends_on:
-      - db
+      - postgres-app
     volumes:
       - .:/app
 
-  db:
+  postgres-app:
     image: postgres:16
-    container_name: postgres_container
+    container_name: postgres-container
     restart: unless-stopped
     ports:
       - 5432:5432
