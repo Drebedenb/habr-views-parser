@@ -9,8 +9,8 @@ class StoringPipeline:
 
     def open_spider(self, spider) -> None:
         self.conn = psycopg.connect("host='postgres-app' dbname='postgres' user='postgres' password='postgres' port=5432")
-        self.buffer = []  # Temporary storage for batch insert
-        self.batch_size = 100  # Insert after collecting this many items
+        self.buffer = []  
+        self.batch_size = 100  # Insert into db after collecting this many items
         # self.conn.autocommit = True
 
     def process_item(self, item: ArticleItem, spider: Spider) -> ArticleItem:
@@ -20,7 +20,6 @@ class StoringPipeline:
 
         self.buffer.append((item['url'], item['title'], dt, views))
 
-        # If buffer reaches batch size, perform bulk insert
         if len(self.buffer) >= self.batch_size:
             self.flush()
         
@@ -30,8 +29,9 @@ class StoringPipeline:
         """Insert buffered data into the database in bulk."""
         if self.buffer:
             with self.conn.cursor() as cursor:
+                # Table name(in this case main_viewsdata) we take from automatically created table by django
                 query = """
-                    INSERT INTO views_data (url, title, datetime, views) 
+                    INSERT INTO main_viewsdata (url, title, datetime, views) 
                     VALUES (%s, %s, %s, %s)
                 """
                 cursor.executemany(query, self.buffer)
