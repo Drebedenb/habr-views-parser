@@ -23,7 +23,8 @@
 	"customizations": {
     "vscode": {
 		"settings": {
-      "python.defaultInterpreterPath": "/usr/local/bin/python3"
+      "python.defaultInterpreterPath": "/usr/local/bin/python3",
+	  "remote.autoForwardPorts": false
     },
       "extensions": [
         "ms-python.python",
